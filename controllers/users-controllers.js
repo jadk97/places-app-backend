@@ -1,5 +1,5 @@
 const uuid = require("uuid/v4");
-
+const HttpError = require("../models/http-error");
 const DUMMY_USERS = [
   {
     id: "u1",
@@ -27,7 +27,16 @@ const signup = (req, res, next) => {
 }
 
 const login = (req, res, next) => {
+  const {email, password} = req.body;
+  
+  const identifiedUser = DUMMY_USERS.find(u => u.email === email);
 
+  if (!identifiedUser || identifiedUser.password !== password){
+    const error = new HttpError("Invalid login credentials", 401);
+    return next(error);
+  }
+
+  res.json({message: "Successfully logged in."})
 }
 
 module.exports = {getUsers, signup, login}
