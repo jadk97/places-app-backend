@@ -41,19 +41,46 @@ const getPlaceByUserId = (req, res, next) => {
 }
 
 const createPlace = (req, res, next) => {
- const { title, description, coordinates, address, creator} = req.body;
- 
- const createdPlace = {
-   id: uuid(),
-   title,
-   description,
-   location: coordinates,
-   address,
-   creator
- }
+  const { title, description, coordinates, address, creator } = req.body;
 
- DUMMY_PLACES.push(createdPlace);
- res.status(201).json({ place: createdPlace});
+  const createdPlace = {
+    id: uuid(),
+    title,
+    description,
+    location: coordinates,
+    address,
+    creator
+  }
+
+  DUMMY_PLACES.push(createdPlace);
+  res.status(201).json({ place: createdPlace });
 }
 
-module.exports = { getPlaceById, getPlaceByUserId, createPlace };
+const updatePlace = (req, res, next) => {
+  const { title, description } = req.body;
+  const placeId = req.params.pid;
+
+  const updatedPlace = { ...DUMMY_PLACES.find(p => p.id === placeId) };
+
+  const placeIndex = DUMMY_PLACES.findIndex(p => p.id === placeId);
+
+  updatedPlace.title = title;
+  updatedPlace.description = description;
+
+  DUMMY_PLACES[placeIndex] = updatedPlace;
+
+  res.status(200).json({ place: updatedPlace })
+}
+
+const deletePlace = (req, res, next) => {
+
+  res.status(200).json({ message: "DELETE Place hit" })
+}
+
+module.exports = {
+  getPlaceById,
+  getPlaceByUserId,
+  createPlace,
+  updatePlace,
+  deletePlace
+};
