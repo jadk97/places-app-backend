@@ -16,6 +16,13 @@ const getUsers = (req, res, next) => {
 const signup = (req, res, next) => {
   const { name, email, password } = req.body;
 
+  const hasUser = DUMMY_USERS.find(u => u.email === email);
+
+  if(hasUser){
+    const error = new HttpError("An account has already been registered under that email.", 422);
+    return next(error);
+  }
+
   const createdUser = {
     id: uuid(),
     name,
@@ -32,7 +39,7 @@ const login = (req, res, next) => {
   const identifiedUser = DUMMY_USERS.find(u => u.email === email);
 
   if (!identifiedUser || identifiedUser.password !== password){
-    const error = new HttpError("Invalid login credentials", 401);
+    const error = new HttpError("Invalid login credentials.", 401);
     return next(error);
   }
 
