@@ -1,4 +1,5 @@
 const uuid = require("uuid/v4");
+const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
 const DUMMY_USERS = [
   {
@@ -10,15 +11,21 @@ const DUMMY_USERS = [
 ];
 
 const getUsers = (req, res, next) => {
-  res.json({users: DUMMY_USERS});
+  res.json({ users: DUMMY_USERS });
 }
 
 const signup = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new HttpError("Invalid inputs passed, please check your data.", 422);
+    return next(error);
+  }
+
   const { name, email, password } = req.body;
 
   const hasUser = DUMMY_USERS.find(u => u.email === email);
 
-  if(hasUser){
+  if (hasUser) {
     const error = new HttpError("An account has already been registered under that email.", 422);
     return next(error);
   }
@@ -30,20 +37,20 @@ const signup = (req, res, next) => {
     password
   }
   DUMMY_USERS.push(createdUser);
-  res.status(201).json({user: createdUser});
+  res.status(201).json({ user: createdUser });
 }
 
 const login = (req, res, next) => {
-  const {email, password} = req.body;
-  
+  const { email, password } = req.body;
+
   const identifiedUser = DUMMY_USERS.find(u => u.email === email);
 
-  if (!identifiedUser || identifiedUser.password !== password){
+  if (!identifiedUser || identifiedUser.password !== password) {
     const error = new HttpError("Invalid login credentials.", 401);
     return next(error);
   }
 
-  res.json({message: "Successfully logged in."})
+  res.json({ message: "Successfully logged in." })
 }
 
-module.exports = {getUsers, signup, login}
+module.exports = { getUsers, signup, login }
