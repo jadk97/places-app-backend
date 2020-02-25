@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require("mongoose");
 
 
-const url = "";
+const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0-fuyhi.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 
 const placesRoutes = require("./routes/places-routes");
 const usersRoutes = require("./routes/users-routes");

@@ -1,9 +1,9 @@
-const API_KEY= "";
+
 const axios = require("axios");
 const HttpError = require("../models/http-error");
 
 async function getCoordsForAddress(address) {
-  const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${API_KEY}`);
+  const response = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?access_token=${process.env.MAPBOX_API_KEY}`);
 
   const data = response.data;
   if(data.features.length === 0){
