@@ -2,6 +2,7 @@ const HttpError = require("../models/http-error");
 const uuid = require("uuid/v4");
 const { validationResult } = require("express-validator");
 const getCoordsForAddress = require("../util/location");
+const Place = require("../models/place");
 
 let DUMMY_PLACES = [
   {
@@ -59,16 +60,23 @@ const createPlace = async (req, res, next) => {
     return next(error);
   }
 
-  const createdPlace = {
-    id: uuid(),
+  const createdPlace = new Place({
     title,
     description,
-    location: coordinates,
     address,
+    location: coordinates,
+    image: "https://untappedcities.com/wp-content/uploads/2015/07/Flatiron-Building-Secrets-Roof-Basement-Elevator-Sonny-Atis-GFP-NYC_5.jpg",
     creator
+  });
+
+  try{
+    await createdPlace.save();
+  }
+  catch(err){
+    const error = new HttpError("Creating place failed, please try again", 500);
+    return next(error);
   }
 
-  DUMMY_PLACES.push(createdPlace);
   res.status(201).json({ place: createdPlace });
 }
 
