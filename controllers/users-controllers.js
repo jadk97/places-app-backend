@@ -76,7 +76,7 @@ const login = async (req, res, next) => {
   }
 
 
-  res.json({ message: "Successfully logged in." })
+  res.json({ message: "Successfully logged in.", user: existingUser.toObject({ getters: true }) })
 }
 
 module.exports = { getUsers, signup, login }
